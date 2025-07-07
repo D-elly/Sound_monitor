@@ -78,11 +78,16 @@ int main() {
     sample_mic();
 
     // Pega a potência média da amostragem do microfone.
-    float avg = mic_power();
-    avg = 2.f * abs(ADC_ADJUST(avg)); // Ajusta para intervalo de 0 a 3.3V. (apenas magnitude, sem sinal)
+    //float avg = mic_power();
+    //avg = 2.f * abs(ADC_ADJUST(avg)); // Ajusta para intervalo de 0 a 3.3V. (apenas magnitude, sem sinal)
 
-    // Envia a intensidade e a média das leituras do ADC por serial.
-    printf("Avg: %8.4f\n", avg);
+    float vrms = ADC_ADJUST(mic_power());  // converte RMS do ADC para volts (ajustado em relação a 1.65V)
+    vrms = fabsf(vrms);                    // pega apenas a magnitude (sem sinal)
+
+    float dbv = 20.0f * log10f(vrms / 1.0f);     // dB em relação a 1 V (dBV)
+    float dbu = 20.0f * log10f(vrms / 0.775f);   // dB em relação a 0,775 V (dBu)
+
+    printf("Vrms: %.4f V | dBV: %.2f dB | dBu: %.2f dB\n", vrms, dbv, dbu);
     sleep_ms(500);
   }
 }
