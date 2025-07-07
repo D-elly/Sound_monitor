@@ -44,6 +44,7 @@ pico_set_program_version(Sound_monitor "0.1")
 pico_enable_stdio_uart(Sound_monitor 0)
 pico_enable_stdio_usb(Sound_monitor 1)
 
+
 # Add the standard library to the build
 target_link_libraries(Sound_monitor
         pico_stdlib)
@@ -51,11 +52,14 @@ target_link_libraries(Sound_monitor
 # Add the standard include files to the build
 target_include_directories(Sound_monitor PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
+        ${CMAKE_CURRENT_LIST_DIR}/../inc
 )
 
 # Add any user requested libraries
 target_link_libraries(Sound_monitor 
-        
+    pico_stdlib
+    hardware_adc
+    hardware_dma
         )
 
 pico_add_extra_outputs(Sound_monitor)
