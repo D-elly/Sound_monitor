@@ -81,10 +81,9 @@ int main() {
     float avg = mic_power();
     avg = 2.f * abs(ADC_ADJUST(avg)); // Ajusta para intervalo de 0 a 3.3V. (apenas magnitude, sem sinal)
 
-    uint intensity = get_intensity(avg); // Calcula intensidade a ser mostrada na matriz de LEDs.
-
     // Envia a intensidade e a média das leituras do ADC por serial.
-    printf("%2d %8.4f\r", intensity, avg);
+    printf("Avg: %8.4f\n", avg);
+    sleep_ms(500);
   }
 }
 
