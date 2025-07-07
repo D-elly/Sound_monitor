@@ -47,20 +47,30 @@ pico_enable_stdio_usb(Sound_monitor 1)
 
 # Add the standard library to the build
 target_link_libraries(Sound_monitor
-        pico_stdlib)
+        pico_stdlib
+        hardware_adc
+        hardware_dma
+        pico_cyw43_arch
+        pico_multicore
+        pico_sync
+        hardware_pwm
+        pico_cyw43_arch_lwip_threadsafe_background
+        hardware_i2c
+        pico_lwip_mqtt
+    )
 
 # Add the standard include files to the build
 target_include_directories(Sound_monitor PRIVATE
+        PUBLIC 
         ${CMAKE_CURRENT_LIST_DIR}
         ${CMAKE_CURRENT_LIST_DIR}/../inc
+        ${CMAKE_CURRENT_SOURCE_DIR}/lwip_config
 )
 
 # Add any user requested libraries
 target_link_libraries(Sound_monitor 
     pico_stdlib
-    hardware_adc
-    hardware_dma
-        )
+)
 
 pico_add_extra_outputs(Sound_monitor)
 

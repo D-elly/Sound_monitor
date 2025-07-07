@@ -10,13 +10,25 @@
 #include "fila_circular.h"
 #include "rgb_pwm_control.h"
 #include "configura_geral.h"
-#include "oled_utils.h"
-#include "ssd1306_i2c.h"
+//#include "oled_utils.h"
+//#include "ssd1306_i2c.h"
 #include "mqtt_lwip.h"
 #include "lwip/ip_addr.h"
 #include "pico/multicore.h"
 #include <stdio.h>
 #include "estado_mqtt.h"
+
+#define RED_LED 13
+#define GREEN_LED 11
+
+/*
+gpio_init(RED_LED);
+gpio_set_dir(RED_LED, GPIO_OUT);
+gpio_put(RED_LED, false);
+
+gpio_init(GREEN_LED);
+gpio_set_dir(GREEN_LED, GPIO_OUT);
+gpio_put(GREEN_LED, false);*/
 
 /**
  * @brief Aguarda até que a conexão USB esteja pronta para comunicação.
@@ -30,7 +42,8 @@ void espera_usb() {
 
 //função de callback para tornar led verde novamente após um segundo
 int64_t turn_off_callback_verde(alarm_id_t id, void *user_data) {
-    set_rgb_pwm(0, 65535, 0);
+    //set_rgb_pwm(0, 65535, 0);
+    printf("Sinal Verde\n");
     return 0;
 }
 
@@ -49,18 +62,19 @@ void tratar_mensagem(MensagemWiFi msg) {
         if (msg.status == 0) {
             //chama as funções de gerar numeros aleatórios, coloca o retorno na função em uma variavel inteira para configurar o set_rgb_pwm
             //de forma aleatória logo após ocorrer o ping
-            int r = numero_aleatorio(0, 65535);
-            int g = numero_aleatorio(0, 65535);
-            int b = numero_aleatorio(0, 65535);
-            ssd1306_draw_utf8_multiline(buffer_oled, 0, 32, "ACK do PING OK");
-            set_rgb_pwm(r, g, b); //pisca cor aleatoria no led
+            //int r = numero_aleatorio(0, 65535);
+            //int g = numero_aleatorio(0, 65535);
+            //int b = numero_aleatorio(0, 65535);
+            //ssd1306_draw_utf8_multiline(buffer_oled, 0, 32, "ACK do PING OK");
+            //set_rgb_pwm(r, g, b); //pisca cor aleatoria no led
             add_alarm_in_ms(1000, turn_off_callback_verde, NULL, &timer); //torna o led verde após um segundo da cor aleatória
         } 
         else {
-            ssd1306_draw_utf8_multiline(buffer_oled, 0, 32, "ACK do PING FALHOU");
-            set_rgb_pwm(65535, 0, 0); // vermelho
+            //ssd1306_draw_utf8_multiline(buffer_oled, 0, 32, "ACK do PING FALHOU");
+            //set_rgb_pwm(65535, 0, 0); // vermelho
+            printf("ACK do PING FALHOU\n");
         }
-        render_on_display(buffer_oled, &area);
+        //render_on_display(buffer_oled, &area);
         return;
     }
 
@@ -68,30 +82,34 @@ void tratar_mensagem(MensagemWiFi msg) {
     switch (msg.status) {
         case 0:
             descricao = "INICIALIZANDO";
-            set_rgb_pwm(PWM_STEP, 0, 0);  // LED vermelho
+            printf("INICIALIZANDO\n");
+            //set_rgb_pwm(PWM_STEP, 0, 0);  // LED vermelho
             break;
         case 1:
             descricao = "CONECTADO";
-            set_rgb_pwm(0, PWM_STEP, 0);  // LED verde
+            printf("CONECTADO\n");
+            //set_rgb_pwm(0, PWM_STEP, 0);  // LED verde
             break;
         case 2:
             descricao = "FALHA";
-            set_rgb_pwm(0, 0, PWM_STEP);  // LED azul
+            printf("FALHA\n");
+            //set_rgb_pwm(0, 0, PWM_STEP);  // LED azul
             break;
         default:
             descricao = "DESCONHECIDO";
-            set_rgb_pwm(PWM_STEP, PWM_STEP, PWM_STEP);  // LED branco
+            printf("DESCONHECIDO\n");
+            //set_rgb_pwm(PWM_STEP, PWM_STEP, PWM_STEP);  // LED branco
             break;
     }
 
     char linha_status[32];
-    snprintf(linha_status, sizeof(linha_status), "Status do Wi-Fi : %s", descricao);
+    /*snprintf(linha_status, sizeof(linha_status), "Status do Wi-Fi : %s", descricao);
 
     ssd1306_draw_utf8_multiline(buffer_oled, 0, 0, linha_status);
     render_on_display(buffer_oled, &area);
     sleep_ms(3000);
     oled_clear(buffer_oled, &area);
-    render_on_display(buffer_oled, &area);
+    render_on_display(buffer_oled, &area);*/
 
     printf("[NÚCLEO 0] Status: %s (%s)\n", descricao, msg.tentativa > 0 ? descricao : "evento");
 }
@@ -108,11 +126,12 @@ void tratar_ip_binario(uint32_t ip_bin) {
     ip[2] = (ip_bin >> 8) & 0xFF;
     ip[3] = ip_bin & 0xFF;
 
+    /*
     snprintf(ip_str, sizeof(ip_str), "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
 
     oled_clear(buffer_oled, &area);
     ssd1306_draw_utf8_string(buffer_oled, 0, 0, ip_str);
-    render_on_display(buffer_oled, &area);
+    render_on_display(buffer_oled, &area);*/
 
     printf("[NÚCLEO 0] Endereço IP: %s\n", ip_str);
     ultimo_ip_bin = ip_bin;
@@ -122,9 +141,10 @@ void tratar_ip_binario(uint32_t ip_bin) {
  * @brief Exibe status textual do MQTT no OLED e terminal.
  */
 void exibir_status_mqtt(const char *texto) {
+    /*
     ssd1306_draw_utf8_string(buffer_oled, 0, 16, "MQTT: ");
     ssd1306_draw_utf8_string(buffer_oled, 40, 16, texto);
-    render_on_display(buffer_oled, &area);
+    render_on_display(buffer_oled, &area);*/
 
     printf("[MQTT] %s\n", texto);
 }

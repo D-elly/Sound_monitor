@@ -17,7 +17,7 @@
  */
 
 #include "estado_mqtt.h"        // Declaração das variáveis externas
-#include "ssd1306_i2c.h"        // Define tamanho do buffer e estrutura de renderização
+//#include "ssd1306_i2c.h"        // Define tamanho do buffer e estrutura de renderização
 
 // ================================
 // DEFINIÇÕES GLOBAIS ÚNICAS
@@ -46,7 +46,7 @@ bool mqtt_iniciado = false;
  * Seu tamanho é definido pela função `ssd1306_buffer_length`, de acordo com
  * a resolução do display (tipicamente 128x64).
  */
-uint8_t buffer_oled[ssd1306_buffer_length];
+//uint8_t buffer_oled[ssd1306_buffer_length];
 
 /**
  * @brief Estrutura que define a área da tela a ser desenhada.
@@ -54,4 +54,4 @@ uint8_t buffer_oled[ssd1306_buffer_length];
  * Usada pelas funções de renderização para aplicar atualizações no OLED,
  * como `render_on_display()`.
  */
-struct render_area area;
+//struct render_area area;

@@ -20,7 +20,7 @@
 #include "lwip/apps/mqtt.h"     // API MQTT da lwIP
 #include "lwip/ip_addr.h"       // Manipulação de endereços IP
 #include "configura_geral.h"    // Define constantes como TOPICO, MQTT_BROKER_IP, MQTT_BROKER_PORT
-#include "display_utils.h"      // exibir_status_mqtt() e funções de feedback visual
+//#include "display_utils.h"      // exibir_status_mqtt() e funções de feedback visual
 
 
 // ========================
