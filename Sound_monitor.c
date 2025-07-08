@@ -3,6 +3,7 @@
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
 #include "hardware/dma.h"
+#include "inc\mqtt_lwip.h"
 
 // Pino e canal do microfone no ADC.
 #define MIC_CHANNEL 2
@@ -27,10 +28,10 @@ uint16_t adc_buffer[SAMPLES];
 void sample_mic();
 float mic_power();
 uint8_t get_intensity(float v);
+char *Sound_level(void *params);
+void init_mic_dma();
 
-int main() {
-  stdio_init_all();
-
+void init_mic_dma(){
   // Preparação do ADC.
   printf("Preparando ADC...\n");
 
@@ -64,22 +65,14 @@ int main() {
   
   channel_config_set_dreq(&dma_cfg, DREQ_ADC); // Usamos a requisição de dados do ADC
 
-  // Amostragem de teste.
-  printf("Amostragem de teste...\n");
-  sample_mic();
-
-
   printf("Configuracoes completas!\n");
+}
 
-  printf("\n----\nIniciando loop...\n----\n");
-  while (true) {
+char *Sound_level(void *params){
+    printf("\n----\nIniciando leitura...\n----\n");
 
     // Realiza uma amostragem do microfone.
     sample_mic();
-
-    // Pega a potência média da amostragem do microfone.
-    //float avg = mic_power();
-    //avg = 2.f * abs(ADC_ADJUST(avg)); // Ajusta para intervalo de 0 a 3.3V. (apenas magnitude, sem sinal)
 
     float vrms = ADC_ADJUST(mic_power());  // converte RMS do ADC para volts (ajustado em relação a 1.65V)
     vrms = fabsf(vrms);                    // pega apenas a magnitude (sem sinal)
@@ -89,7 +82,10 @@ int main() {
 
     printf("Vrms: %.4f V | dBV: %.2f dB | dBu: %.2f dB\n", vrms, dbv, dbu);
     sleep_ms(500);
-  }
+
+    char db_level[64];
+    sprintf(db_level, "%.2f", dbv);  //transforma variavel decibeis em uma string para ser publicada no mqtt 
+    return db_level;
 }
 
 /**
