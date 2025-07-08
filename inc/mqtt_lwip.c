@@ -67,10 +67,12 @@ void publicar_mensagem_mqtt(const char *mensagem);
 void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection_status_t status)
 {
     if (status == MQTT_CONNECT_ACCEPTED) {
-        exibir_status_mqtt("CONECTADO");
+        //exibir_status_mqtt("CONECTADO");
+        printf("CONECTADO");
         publicar_mensagem_mqtt("Pico W online");
     } else {
-        exibir_status_mqtt("FALHA");
+        //exibir_status_mqtt("FALHA");
+        printf("FALHA");
     }
 }
 
@@ -136,13 +138,13 @@ void publicar_mensagem_mqtt(const char *mensagem)
 {
     if (!client) {
         printf("[MQTT] Cliente NULL\n");
-        exibir_status_mqtt("CLIENTE NULL");
+        //exibir_status_mqtt("CLIENTE NULL");
         return;
     }
 
     if (!mqtt_client_is_connected(client)) {
         printf("[MQTT] Cliente MQTT não está conectado.\n");
-        exibir_status_mqtt("DESCONECTADO");
+        //exibir_status_mqtt("DESCONECTADO");
         return;
     }
 
@@ -157,7 +159,7 @@ void publicar_mensagem_mqtt(const char *mensagem)
 
     if (err != ERR_OK) {
         printf("Erro ao tentar publicar: %d\n", err);
-        exibir_status_mqtt("PUB FALHOU");
+        //exibir_status_mqtt("PUB FALHOU");
     }
 }
 

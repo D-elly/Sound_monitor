@@ -35,9 +35,15 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(Sound_monitor 
-                    main.c
-                    Sound_monitor.c )
+add_executable(Sound_monitor main.c
+        Sound_monitor.c
+        main_auxiliar.c
+        inc/fila_circular.c
+        inc/rgb_pwm_control.c
+        inc/conexao.c
+        inc/mqtt_lwip.c
+        estado_mqtt.c
+        )
 
 pico_set_program_name(Sound_monitor "Sound_monitor")
 pico_set_program_version(Sound_monitor "0.1")

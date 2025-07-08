@@ -4,19 +4,7 @@
 #include "hardware/adc.h"
 #include "hardware/dma.h"
 #include "inc\mqtt_lwip.h"
-
-// Pino e canal do microfone no ADC.
-#define MIC_CHANNEL 2
-#define MIC_PIN (26 + MIC_CHANNEL)
-
-// Parâmetros e macros do ADC.
-#define ADC_CLOCK_DIV 96.f
-#define SAMPLES 200 // Número de amostras que serão feitas do ADC.
-#define ADC_ADJUST(x) (x * 3.3f / (1 << 12u) - 1.65f) // Ajuste do valor do ADC para Volts.
-#define ADC_MAX 3.3f
-#define ADC_STEP (3.3f/5.f) // Intervalos de volume do microfone.
-
-#define abs(x) ((x < 0) ? (-x) : (x))
+#include "Sound_monitor.h"
 
 // Canal e configurações do DMA
 uint dma_channel;
@@ -24,12 +12,6 @@ dma_channel_config dma_cfg;
 
 // Buffer de amostras do ADC.
 uint16_t adc_buffer[SAMPLES];
-
-void sample_mic();
-float mic_power();
-uint8_t get_intensity(float v);
-char *Sound_level(void *params);
-void init_mic_dma();
 
 void init_mic_dma(){
   // Preparação do ADC.
@@ -68,7 +50,7 @@ void init_mic_dma(){
   printf("Configuracoes completas!\n");
 }
 
-char *Sound_level(void *params){
+void Sound_level(char *buf, int len){
     printf("\n----\nIniciando leitura...\n----\n");
 
     // Realiza uma amostragem do microfone.
@@ -84,8 +66,7 @@ char *Sound_level(void *params){
     sleep_ms(500);
 
     char db_level[64];
-    sprintf(db_level, "%.2f", dbv);  //transforma variavel decibeis em uma string para ser publicada no mqtt 
-    return db_level;
+    sprintf(buf, "%.2f", dbv);  //transforma variavel decibeis em uma string para ser publicada no mqtt 
 }
 
 /**
@@ -121,16 +102,4 @@ float mic_power() {
   
   avg /= SAMPLES;
   return sqrt(avg);
-}
-
-/**
- * Calcula a intensidade do volume registrado no microfone, de 0 a 4, usando a tensão.
- */
-uint8_t get_intensity(float v) {
-  uint count = 0;
-
-  while ((v -= ADC_STEP/20) > 0.f)
-    ++count;
-  
-  return count;
 }

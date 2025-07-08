@@ -7,31 +7,20 @@
  * exibição no display OLED e ao controle visual do estado da rede por meio de um LED RGB.
  */
 
-#include "fila_circular.h"
-#include "rgb_pwm_control.h"
+#include "inc/fila_circular.h"
+#include "inc/rgb_pwm_control.h"
 #include "configura_geral.h"
 //#include "oled_utils.h"
 //#include "ssd1306_i2c.h"
-#include "mqtt_lwip.h"
+#include "inc/mqtt_lwip.h"
 #include "lwip/ip_addr.h"
 #include "pico/multicore.h"
 #include <stdio.h>
 #include "estado_mqtt.h"
 
-#define RED_LED 13
-#define GREEN_LED 11
 
-/*
-gpio_init(RED_LED);
-gpio_set_dir(RED_LED, GPIO_OUT);
-gpio_put(RED_LED, false);
-
-gpio_init(GREEN_LED);
-gpio_set_dir(GREEN_LED, GPIO_OUT);
-gpio_put(GREEN_LED, false);*/
-
-/**
- * @brief Aguarda até que a conexão USB esteja pronta para comunicação.
+/** 
+@brief Aguarda até que a conexão USB esteja pronta para comunicação.
  */
 void espera_usb() {
     while (!stdio_usb_connected()) {

@@ -13,13 +13,14 @@
  */
 
 #include <stdio.h>
-#include "fila_circular.h"
-#include "rgb_pwm_control.h"
+#include "inc\fila_circular.h"
+#include "inc\rgb_pwm_control.h"
 #include "configura_geral.h"
-#include "mqtt_lwip.h"
+#include "inc\mqtt_lwip.h"
 #include "lwip/ip_addr.h"
 #include "pico/multicore.h"
 #include "estado_mqtt.h"
+#include "Sound_monitor.h"
 
 #define INTERVALO_PING_MS 5000  // Intervalo entre envios de "PING" (modificável)
 
@@ -75,24 +76,25 @@ void verificar_fifo(void) {
     uint16_t status = pacote & 0xFFFF;
 
     if (status > 2 && tentativa != 0x9999) {
-        snprintf(mensagem_str, sizeof(mensagem_str),
+        /*snprintf(mensagem_str, sizeof(mensagem_str),
                  "Status inválido: %u (tentativa %u)", status, tentativa);
         ssd1306_draw_utf8_multiline(buffer_oled, 0, 0, "Status inválido.");
         render_on_display(buffer_oled, &area);
         sleep_ms(3000);
         oled_clear(buffer_oled, &area);
-        render_on_display(buffer_oled, &area);
+        render_on_display(buffer_oled, &area);*/
         printf("%s\n", mensagem_str);
+        printf("Status inválido.");
         return;
     }
 
     MensagemWiFi msg = {.tentativa = tentativa, .status = status};
     if (!fila_inserir(&fila_wifi, msg)) {
-        ssd1306_draw_utf8_multiline(buffer_oled, 0, 0, "Fila cheia. Descartado.");
+        /*ssd1306_draw_utf8_multiline(buffer_oled, 0, 0, "Fila cheia. Descartado.");
         render_on_display(buffer_oled, &area);
         sleep_ms(3000);
         oled_clear(buffer_oled, &area);
-        render_on_display(buffer_oled, &area);
+        render_on_display(buffer_oled, &area);*/
         printf("Fila cheia. Mensagem descartada.\n");
     }
 }
@@ -115,9 +117,11 @@ void inicializar_mqtt_se_preciso(void) {
 
 void enviar_ping_periodico(void) {
     if (mqtt_iniciado && absolute_time_diff_us(get_absolute_time(), proximo_envio) <= 0) {
-        publicar_mensagem_mqtt("PING");
-        ssd1306_draw_utf8_multiline(buffer_oled, 0, 0, "PING enviado...");
-        render_on_display(buffer_oled, &area);
+        char buf[16];
+        Sound_level(buf, sizeof(buf));
+        publicar_mensagem_mqtt(buf);
+        /*ssd1306_draw_utf8_multiline(buffer_oled, 0, 0, "PING enviado...");
+        render_on_display(buffer_oled, &area);*/
         proximo_envio = make_timeout_time_ms(INTERVALO_PING_MS);
     }
 }
@@ -125,22 +129,23 @@ void enviar_ping_periodico(void) {
 /************/
 void inicia_hardware(){
     stdio_init_all();
-    setup_init_oled();
+    //setup_init_oled();
     espera_usb();
-    oled_clear(buffer_oled, &area);
-    render_on_display(buffer_oled, &area);
+    /*oled_clear(buffer_oled, &area);
+    render_on_display(buffer_oled, &area);*/
     init_mic_dma();
 }
 
 void inicia_core1(){
 // Mensagem de inicialização
-    ssd1306_draw_utf8_multiline(buffer_oled, 0, 0, "Núcleo 0");
+    /*ssd1306_draw_utf8_multiline(buffer_oled, 0, 0, "Núcleo 0");
     ssd1306_draw_utf8_multiline(buffer_oled, 0, 16, "Iniciando!");
     render_on_display(buffer_oled, &area);
     sleep_ms(3000);
     oled_clear(buffer_oled, &area);
-    render_on_display(buffer_oled, &area);
+    render_on_display(buffer_oled, &area);*/
 
+    sleep_ms(3000);
     printf(">> Núcleo 0 iniciado. Aguardando mensagens do núcleo 1...\n");
 
     init_rgb_pwm();
