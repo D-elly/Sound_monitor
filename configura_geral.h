@@ -28,10 +28,10 @@
 
 #define WIFI_SSID "ROBERTA"
 #define WIFI_PASS "Jf5ls3j7"
-#define MQTT_BROKER_IP "10.0.0.103"
+#define MQTT_BROKER_IP "10.0.0.101"
 #define MQTT_BROKER_PORT 1883
 #define TOPICO "pico/PING"
-#define INTERVALO_PING_MS 5000
+#define INTERVALO_PING_MS 500
 
 
 // Buffers globais para OLED

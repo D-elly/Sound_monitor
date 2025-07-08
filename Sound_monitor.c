@@ -63,7 +63,6 @@ void Sound_level(char *buf, int len){
     float dbu = 20.0f * log10f(vrms / 0.775f);   // dB em relação a 0,775 V (dBu)
 
     printf("Vrms: %.4f V | dBV: %.2f dB | dBu: %.2f dB\n", vrms, dbv, dbu);
-    sleep_ms(500);
 
     char db_level[64];
     sprintf(buf, "%.2f", dbv);  //transforma variavel decibeis em uma string para ser publicada no mqtt 

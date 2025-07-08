@@ -22,7 +22,7 @@
 #include "estado_mqtt.h"
 #include "Sound_monitor.h"
 
-#define INTERVALO_PING_MS 5000  // Intervalo entre envios de "PING" (modificável)
+//#define INTERVALO_PING_MS 500  // Intervalo entre envios de "PING" (modificável)
 
 extern void funcao_wifi_nucleo1(void);
 extern void espera_usb();
