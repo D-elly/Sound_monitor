@@ -59,13 +59,12 @@ void Sound_level(char *buf, int len){
     float vrms = ADC_ADJUST(mic_power());  // converte RMS do ADC para volts (ajustado em relação a 1.65V)
     vrms = fabsf(vrms);                    // pega apenas a magnitude (sem sinal)
 
-    float dbv = 20.0f * log10f(vrms / 1.0f);     // dB em relação a 1 V (dBV)
-    float dbu = 20.0f * log10f(vrms / 0.775f);   // dB em relação a 0,775 V (dBu)
+    float db = 20.0f * log10f(vrms / 3.3f);     // dBFS(decibeis em full scale) usando a voltagem máxima como referencia
 
-    printf("Vrms: %.4f V | dBV: %.2f dB | dBu: %.2f dB\n", vrms, dbv, dbu);
+    printf("Vrms: %.4f V | dBV: %.2f dB\n", vrms, db);
 
     char db_level[64];
-    sprintf(buf, "%.2f", dbv);  //transforma variavel decibeis em uma string para ser publicada no mqtt 
+    sprintf(buf, "%.2f", db);  //transforma variavel decibeis em uma string para ser publicada no mqtt 
 }
 
 /**
@@ -96,8 +95,9 @@ void sample_mic() {
 float mic_power() {
   float avg = 0.f;
 
-  for (uint i = 0; i < SAMPLES; ++i)
+  for (uint i = 0; i < SAMPLES; ++i){
     avg += adc_buffer[i] * adc_buffer[i];
+  }
   
   avg /= SAMPLES;
   return sqrt(avg);
