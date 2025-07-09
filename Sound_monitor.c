@@ -60,6 +60,7 @@ void Sound_level(char *buf, int len){
     vrms = fabsf(vrms);                    // pega apenas a magnitude (sem sinal)
 
     float db = 20.0f * log10f(vrms / 3.3f);     // dBFS(decibeis em full scale) usando a voltagem máxima como referencia
+    db = 1.04f * db + 78.78; //calibração empirica do dbFS, obtido com regressão linear(28 amostras)
 
     printf("Vrms: %.4f V | dBV: %.2f dB\n", vrms, db);
 
