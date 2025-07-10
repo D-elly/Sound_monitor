@@ -30,7 +30,7 @@
 #define WIFI_PASS "Jf5ls3j7"
 #define MQTT_BROKER_IP "10.0.0.101"
 #define MQTT_BROKER_PORT 1883
-#define TOPICO "pico/PING"
+#define TOPICO "pico/som"
 #define INTERVALO_PING_MS 500
 
 
