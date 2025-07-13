@@ -117,9 +117,13 @@ void inicializar_mqtt_se_preciso(void) {
 
 void enviar_ping_periodico(void) {
     if (mqtt_iniciado && absolute_time_diff_us(get_absolute_time(), proximo_envio) <= 0) {
-        char buf[16];
-        Sound_level(buf, sizeof(buf));
-        publicar_mensagem_mqtt(buf);
+        char valor_som[16];
+        char mensagem[64];
+        Sound_level(valor_som, sizeof(valor_som));
+
+        const char* sala = "Sala 1";
+        snprintf(mensagem, sizeof(mensagem), "%s: %s", sala, valor_som);
+        publicar_mensagem_mqtt(mensagem);
         /*ssd1306_draw_utf8_multiline(buffer_oled, 0, 0, "PING enviado...");
         render_on_display(buffer_oled, &area);*/
         proximo_envio = make_timeout_time_ms(INTERVALO_PING_MS);

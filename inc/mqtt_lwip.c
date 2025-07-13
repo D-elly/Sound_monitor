@@ -121,7 +121,7 @@ void iniciar_mqtt_cliente()
 
     // Limpa e configura a estrutura de informações do cliente
     memset(&ci, 0, sizeof(ci));
-    ci.client_id = "pico_lwip";  // Nome que o broker verá
+    ci.client_id = "pico_sala1";  // Nome que o broker verá
 
     // Conecta ao broker com callback de resultado
     mqtt_client_connect(client, &broker_ip, MQTT_BROKER_PORT, mqtt_connection_cb, NULL, &ci);
